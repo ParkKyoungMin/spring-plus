@@ -61,7 +61,31 @@ public class TodoService {
                 todo.getTitle(),
                 todo.getContents(),
                 todo.getWeather(),
-                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail(), todo.getUser()),
+                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail(), todo.getUser().getNickname()),
+                todo.getCreatedAt(),
+                todo.getModifiedAt()
+        ));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TodoResponse> searchTodos(String weather, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        if (startDate == null) {
+            startDate = LocalDateTime.of(1000, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.of(9999, 12, 31, 23, 59);
+        }
+
+        Page<Todo> todos = todoRepository.findAllByWeatherAndDateRange(weather, startDate, endDate, pageable);
+
+        return todos.map(todo -> new TodoResponse(
+                todo.getId(),
+                todo.getTitle(),
+                todo.getContents(),
+                todo.getWeather(),
+                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail(), todo.getUser().getNickname()),
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         ));
