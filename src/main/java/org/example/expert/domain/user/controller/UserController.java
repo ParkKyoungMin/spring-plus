@@ -1,8 +1,9 @@
 package org.example.expert.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.common.annotation.Auth;
-import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.config.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
 import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.service.UserService;
@@ -21,7 +22,10 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public void changePassword(@Auth AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
-        userService.changePassword(authUser.getId(), userChangePasswordRequest);
+    public void changePassword(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody UserChangePasswordRequest userChangePasswordRequest
+    ) {
+        userService.changePassword(userDetails.getUser().getId(), userChangePasswordRequest);
     }
 }
