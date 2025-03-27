@@ -66,7 +66,6 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
-    // ✅ 추가: HTTP 요청에서 토큰 추출
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -75,7 +74,6 @@ public class JwtUtil {
         return null;
     }
 
-    // ✅ 추가: 토큰 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -89,7 +87,6 @@ public class JwtUtil {
         }
     }
 
-    // ✅ 추가: 토큰에서 클레임(Claims) 추출
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
